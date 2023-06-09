@@ -105,12 +105,14 @@ export default defineComponent({
       this.isShowModal = false;
     },
 
+    //назначение компонента - передать родителю данные из формы
     saveData() {
       this.isShowModal = false;
       this.$emit("saveData", { data: this.form, variant: this.variant });
     },
   },
 
+  //выставление сохраненных данных формы
   watch: {
     dataProps(newValue) {
       this.form = JSON.parse(JSON.stringify(newValue));

@@ -38,6 +38,7 @@ export default defineComponent({
   },
 
   methods: {
+    //назначение компонента - передать родителю свои данные и событие удаления / редактирования
     editContact() {
       this.$emit("editContact", this.dataProps);
     },
