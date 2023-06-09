@@ -11,6 +11,7 @@
 }
 
 .list {
+  box-sizing: border-box;
   margin: 0 auto;
   margin-bottom: 18px;
   max-width: 1200px;
@@ -20,6 +21,9 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0px 5px 7px -2px rgba(80, 80, 80, 0.14);
+  border-radius: 8px;
+  padding-left: 16px;
   &__item {
     box-shadow: inset 0px -4px 7px -2px rgba(80, 80, 80, 0.14);
     border-radius: 5px;
@@ -31,8 +35,9 @@
   }
 }
 .header-modal {
+  margin: 0 auto;
+  max-width: 1200px;
   width: 100%;
-  max-width: 1400px;
   margin-top: 22px;
   margin-bottom: 40px;
   display: flex;
@@ -63,7 +68,6 @@
   &__wrapper {
     display: flex;
     flex-direction: row;
-    width: 100%;
     min-width: 200px;
   }
   &__input {
@@ -86,7 +90,7 @@
     color: $disabled-text;
   }
   &__compensator {
-    width: 18px;
+    width: 40px;
   }
 }
 
@@ -211,5 +215,14 @@
   }
   &:focus {
     color: $color-primary-focus !important;
+  }
+  &--red {
+    color: $red;
+    &:hover {
+      color: $el-color-red;
+    }
+    &:focus {
+      color: $el-color-red !important;
+    }
   }
 }

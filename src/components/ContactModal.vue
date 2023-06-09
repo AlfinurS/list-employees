@@ -73,15 +73,6 @@ import iconClose from "@/components/icons/iconClose.vue";
 import { contactType } from "@/types/common";
 import { contactConst } from "@/constants/common";
 
-/* const dataConst = () => ({
-  id: null,
-  surname: "",
-  name: "",
-  experience: null,
-  age: "",
-  address: "",
-}); */
-
 export default defineComponent({
   name: "ContactModal",
   components: {
@@ -122,7 +113,7 @@ export default defineComponent({
 
   watch: {
     dataProps(newValue) {
-      this.form = newValue;
+      this.form = JSON.parse(JSON.stringify(newValue));
     },
   },
 

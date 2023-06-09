@@ -6,11 +6,11 @@
     <div class="contact__wrapper">{{ dataProps.age }}</div>
     <div class="contact__wrapper">{{ dataProps.address }}</div>
 
-    <div @click="deleteContact" class="button__wrapper link">
-      <iconDelete></iconDelete>
-    </div>
     <div @click="editContact" class="button__wrapper link">
       <iconEdit></iconEdit>
+    </div>
+    <div @click="deleteContact" class="button__wrapper link link--red">
+      <iconDelete></iconDelete>
     </div>
   </div>
 </template>

@@ -15,7 +15,9 @@
       </div>
 
       <div class="">
-        <button @click="addContact" class="btn btn-primary">Добавить</button>
+        <button @click="showCreateModal" class="btn btn-primary">
+          Добавить
+        </button>
       </div>
     </div>
   </div>
@@ -36,6 +38,7 @@
       <div class="contact__wrapper">
         <span class="contact__label">Адрес</span>
       </div>
+      <div class="contact__compensator"></div>
       <div class="contact__compensator"></div>
     </div>
     <ItemContact
@@ -132,32 +135,28 @@ export default defineComponent({
       } else {
         this.addContact(data);
       }
-      console.log(data, variant);
     },
 
     addContact(contact) {
-      this.showAddContact(contact);
+      this.contacts.push(contact);
+      this.saveLocalStorage();
     },
 
-    showAddContact(contact) {
-      this.dataContactModal = contact;
-      this.modalVariant = "edit";
-      const contactModalRef = this.$refs.contactModalRef as any;
-      contactModalRef.showModal();
-
+    showCreateModal() {
       const newContact: contactType = JSON.parse(JSON.stringify(contactConst));
       newContact.id = Date.now();
-      this.contacts.push(newContact);
-      console.log(newContact);
-      //this.saveLocalStorage(newContact);
+      this.dataContactModal = newContact;
+      this.modalVariant = "create";
+      const contactModalRef = this.$refs.contactModalRef as any;
+      contactModalRef.showModal();
     },
 
     editContact(contact: contactType) {
       const index = this.contacts.findIndex((item) => {
         return item.id === contact.id;
       });
-      console.log(contact);
-      //this.saveLocalStorage();
+      this.contacts[index] = JSON.parse(JSON.stringify(contact));
+      this.saveLocalStorage();
     },
 
     deleteContact(contact: contactType) {
@@ -165,7 +164,7 @@ export default defineComponent({
         return item.id === contact.id;
       });
       this.contacts.splice(index, 1);
-      //this.saveLocalStorage();
+      this.saveLocalStorage();
     },
 
     saveLocalStorage() {
