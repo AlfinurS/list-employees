@@ -1,41 +1,26 @@
 <template>
-  <div class="phone-book">
+  <div class="header-modal">
     Список сотрудников
-    <div class="header">
-      <form action="#" class="search__form">
-        <input
-          type="text"
-          class="search__input"
-          v-model="search"
-          placeholder="Поиск сотрудников"
-        />
-        <button class="search__btn" type="submit">Поиск</button>
-      </form>
-      <div class="buttons__wrapper">
-        <button @click="addContact" class="btn btn-primary">Добавить</button>
-        <div class="buttons__wrapp">
-          <button @click="download" class="btn btn-plain buttons__download">
-            Скачать&nbsp;<iconDownload></iconDownload>
-          </button>
-          <label class="mb-0 w-100" for="file">
-            <div class="btn btn-plain">
-              Загрузить &nbsp;<iconUpload></iconUpload>
-            </div>
-          </label>
+    <div class="header__wrapp">
+      <div class="header__search">
+        <form action="#" class="search__form">
           <input
-            :key="uploadKey"
-            class="visibility-none"
-            name="file"
-            type="file"
-            id="file"
-            ref="file"
-            @change="uploadFile()"
+            type="text"
+            class="search__input"
+            v-model="search"
+            placeholder="Поиск сотрудников"
           />
-        </div>
+          <button class="search__btn" type="submit">Поиск</button>
+        </form>
+      </div>
+
+      <div class="">
+        <button @click="addContact" class="btn btn-primary">Добавить</button>
       </div>
     </div>
-
-    <div class="contact">
+  </div>
+  <div>
+    <div class="list">
       <div class="contact__wrapper">
         <span class="contact__label">Фамилия</span>
       </div>
@@ -53,30 +38,35 @@
       </div>
       <div class="contact__compensator"></div>
     </div>
-    <FormContact
-      @deleteContact="deleteContact"
-      @sendData="setData"
+    <ItemContact
       v-for="contact in filteredContacts"
       :key="contact.id"
+      @deleteContact="deleteContact"
+      @editContact="showContactModal"
       :dataProps="contact"
-    ></FormContact>
+    ></ItemContact>
+
+    <ContactModal
+      ref="contactModalRef"
+      @saveData="saveData"
+      :dataProps="dataContactModal"
+      :variant="modalVariant"
+    ></ContactModal>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import FormContact from "@/components/FormContact.vue";
+import ItemContact from "@/components/ItemContact.vue";
+import ContactModal from "@/components/ContactModal.vue";
 import { contactType } from "@/types/common";
 import { contactConst } from "@/constants/common";
-import iconDownload from "@/components/icons/iconDownload.vue";
-import iconUpload from "@/components/icons/iconUpload.vue";
 
 export default defineComponent({
-  name: "Contact",
+  name: "EmployeeComponent",
   components: {
-    FormContact,
-    iconDownload,
-    iconUpload,
+    ItemContact,
+    ContactModal,
   },
 
   data() {
@@ -88,7 +78,7 @@ export default defineComponent({
           name: "Ivan",
           surname: "Ivanovich",
           experience: 10,
-          age: "+79998114499",
+          age: "60",
           address: "ivan@mail.ru",
         },
         {
@@ -96,10 +86,12 @@ export default defineComponent({
           name: "Vasia",
           surname: "Vasilievitch",
           experience: 1,
-          age: "+79999999999",
+          age: "30",
           address: "vasia@mail.ru",
         },
       ] as contactType[],
+      dataContactModal: {} as contactType,
+      modalVariant: "create",
     };
   },
 
@@ -117,45 +109,63 @@ export default defineComponent({
   },
 
   methods: {
-    addContact() {
-      const newContact: contactType = JSON.parse(JSON.stringify(contactConst));
-      newContact.id = Date.now();
-      this.contacts.push(newContact);
-      this.saveLocalStorage();
-    },
-
+    /* 
     setData(form: contactType) {
       const index = this.contacts.findIndex((item) => {
         return item.id === form.id;
       });
       this.contacts[index] = JSON.parse(JSON.stringify(form));
       this.saveLocalStorage();
+    }, */
+
+    showContactModal(contact: contactType) {
+      this.dataContactModal = contact;
+      this.modalVariant = "edit";
+      const contactModalRef = this.$refs.contactModalRef as any;
+      contactModalRef.showModal();
+      //this.saveLocalStorage();
     },
 
-    deleteContact(form: contactType) {
+    saveData({ data, variant }) {
+      if (variant === "edit") {
+        this.editContact(data);
+      } else {
+        this.addContact(data);
+      }
+      console.log(data, variant);
+    },
+
+    addContact(contact) {
+      this.showAddContact(contact);
+    },
+
+    showAddContact(contact) {
+      this.dataContactModal = contact;
+      this.modalVariant = "edit";
+      const contactModalRef = this.$refs.contactModalRef as any;
+      contactModalRef.showModal();
+
+      const newContact: contactType = JSON.parse(JSON.stringify(contactConst));
+      newContact.id = Date.now();
+      this.contacts.push(newContact);
+      console.log(newContact);
+      //this.saveLocalStorage(newContact);
+    },
+
+    editContact(contact: contactType) {
       const index = this.contacts.findIndex((item) => {
-        return item.id === form.id;
+        return item.id === contact.id;
+      });
+      console.log(contact);
+      //this.saveLocalStorage();
+    },
+
+    deleteContact(contact: contactType) {
+      const index = this.contacts.findIndex((item) => {
+        return item.id === contact.id;
       });
       this.contacts.splice(index, 1);
-      this.saveLocalStorage();
-    },
-
-    saveUploadedData(data) {
-      const result: any = [];
-      data.forEach((item) => {
-        const keysString: string = Object.keys(item)[0];
-        const valuesString: any = Object.values(item)[0];
-        const keysArray: string[] = keysString.split(";");
-        const valuesArray: string[] = valuesString.split(";");
-        const contact = {};
-        keysArray.forEach((key, index) => {
-          contact[key] = valuesArray[index];
-        });
-        result.push(contact);
-      });
-      this.contacts = [];
-      this.contacts = result;
-      this.saveLocalStorage();
+      //this.saveLocalStorage();
     },
 
     saveLocalStorage() {

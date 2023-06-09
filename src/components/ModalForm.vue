@@ -63,6 +63,10 @@ export default defineComponent({
       type: Object as PropType<contactType>,
       default: () => ({}),
     },
+    variant: {
+      type: String,
+      default: "create",
+    },
   },
 
   emits: ["sendData", "deleteContact"],

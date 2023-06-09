@@ -1,18 +1,18 @@
 <template>
   <div id="app">
     <main>
-      <Contact></Contact>
+      <EmployeeComponent></EmployeeComponent>
     </main>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import Contact from "@/components/Contact.vue";
+import EmployeeComponent from "@/components/EmployeeComponent.vue";
 export default defineComponent({
   name: "App",
   components: {
-    Contact,
+    EmployeeComponent,
   },
 });
 </script>
